@@ -1,0 +1,52 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: #f4f6f9;
+  color: #333;
+}
+header {
+  background-color: #003366;
+  padding: 1rem;
+  color: white;
+}
+header h1 {
+  margin: 0;
+}
+nav a {
+  color: white;
+  margin: 0 1rem;
+  text-decoration: none;
+}
+nav a:hover {
+  text-decoration: underline;
+}
+.hero {
+  padding: 2rem;
+  text-align: center;
+  background-color: #0077cc;
+  color: white;
+}
+.hero .btn {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  margin-top: 1rem;
+  background-color: #005fa3;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+.features {
+  display: flex;
+  justify-content: space-around;
+  padding: 2rem;
+}
+.features div {
+  width: 30%;
+}
+footer {
+  background-color: #003366;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+}
