@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - GlobalSim</title>
+</head>
+<body>
+  <h2>Welcome to GlobalSim Dashboard</h2>
+  <p id="userEmail"></p>
+  <p>Your Balance: <span id="balance">$0.00</span></p>
+  <a href="wallet.html">Top-up Wallet</a> |
+  <a href="order.html">Buy a Number</a> |
+  <a href="#" id="logout">Logout</a>
+
+  <script type="module">
+    import { auth, onAuthStateChanged, signOut } from './firebase.js';
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const db = getFirestore();
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        document.getElementById("userEmail").textContent = "Logged in as: " + user.email;
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          document.getElementById("balance").textContent = "$" + (data.balance || 0).toFixed(2);
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    document.getElementById("logout").addEventListener("click", () => {
+      signOut(auth).then(() => window.location.href = "login.html");
+    });
+  </script>
+</body>
+</html>

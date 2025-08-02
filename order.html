@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Order - GlobalSim</title>
+</head>
+<body>
+  <h2>Buy a Number</h2>
+  <form id="orderForm">
+    <label>Country:</label>
+    <select id="country">
+      <option value="US">$5 - United States</option>
+      <option value="UK">$6 - United Kingdom</option>
+      <option value="DE">$8.96 - Germany</option>
+    </select><br>
+    <button type="submit">Place Order</button>
+  </form>
+
+  <script type="module">
+    import { auth, onAuthStateChanged } from './firebase.js';
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const db = getFirestore();
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return window.location.href = "login.html";
+
+      document.getElementById("orderForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const country = document.getElementById("country").value;
+        const prices = { US: 5, UK: 6, DE: 8.96 };
+        const price = prices[country];
+
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists() || (userSnap.data().balance || 0) < price) {
+          alert("Insufficient balance.");
+          return;
+        }
+
+        await setDoc(doc(db, "orders", user.uid + "_" + Date.now()), {
+          user: user.uid,
+          country,
+          price,
+          timestamp: new Date()
+        });
+
+        await setDoc(userRef, {
+          ...userSnap.data(),
+          balance: (userSnap.data().balance || 0) - price
+        });
+
+        alert("Order placed successfully!");
+      });
+    });
+  </script>
+</body>
+</html>
